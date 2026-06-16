@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Predicciones - Mundial 2026</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #27ae60; color: white; border: none; cursor: pointer; }
+        .result-card { margin-top: 20px; padding: 15px; border-left: 5px solid #27ae60; background: #e8f6ef; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Predicción de Resultados</h2>
+    <input list="equipos" id="p1" placeholder="Selecciona Equipo Local">
+    <input list="equipos" id="p2" placeholder="Selecciona Equipo Visitante">
+    <button onclick="calcularPrediccion()">Generar Predicción</button>
+    
+    <div id="resultado"></div>
+
+    <datalist id="equipos">
+        <!-- Lista basada en la Proyección Ajustada -->
+        <option value="Alemania"><option value="Argentina"><option value="Brasil"><option value="España"><option value="Uruguay">
+        <option value="Francia"><option value="Inglaterra"><option value="Colombia"><option value="Bélgica"><option value="Portugal">
+        <option value="Croacia"><option value="Países Bajos"><option value="Suiza"><option value="México"><option value="Japón">
+    </datalist>
+</div>
+
+<script>
+/** 
+ * Matriz de diferencias de goles extraída de la 
+ * "Proyección Ajustada - Diferencia de Goles Mundial 2026"
+ */
+const matrizDiferencias = {
+    "Alemania": { "Argentina": 0, "Brasil": 0, "España": 0, "Uruguay": +1, "Francia": 0 },
+    "Argentina": { "Alemania": 0, "Brasil": 0, "España": 0, "Uruguay": +1, "Francia": 0 },
+    "Brasil": { "Alemania": 0, "Argentina": 0, "España": 0, "Uruguay": +1, "Francia": 0 },
+    "España": { "Alemania": 0, "Argentina": 0, "Brasil": 0, "Uruguay": +1, "Francia": 0 },
+    "Uruguay": { "Alemania": -1, "Argentina": -1, "Brasil": -1, "España": -1, "Francia": -1 },
+    "Francia": { "Alemania": 0, "Argentina": 0, "Brasil": 0, "España": 0, "Uruguay": +1 }
+    // Puedes extender esta matriz con los datos completos del documento[cite: 2]
+};
+
+function calcularPrediccion() {
+    const p1 = document.getElementById('p1').value;
+    const p2 = document.getElementById('p2').value;
+    const resDiv = document.getElementById('resultado');
+
+    if (!matrizDiferencias[p1] || !matrizDiferencias[p1][p2]) {
+        resDiv.innerHTML = "Cruce no encontrado en la base de datos[cite: 2].";
+        return;
+    }
+
+    const diff = matrizDiferencias[p1][p2];
+    const abs = Math.abs(diff);
+
+    resDiv.innerHTML = `
+        <div class="result-card">
+            <strong>Diferencia proyectada: ${diff > 0 ? '+' : ''}${diff}</strong><br>
+            1. ${p1} ${abs}-0 ${p2} (Más probable)<br>
+            2. ${p1} ${abs+1}-1 ${p2} (Probable)<br>
+            3. ${p1} ${abs+2}-2 ${p2} (Poco probable)
+        </div>
+    `;
+}
+</script>
+</body>
+</html>>
