@@ -12,7 +12,6 @@ body {
     margin: 0;
     padding: 20px;
     
-    /* Configuración de tu imagen de fondo en la carpeta assets */
     background-color: #f4f4f9; 
     background-image: url('assets/fondo.svg');
     background-size: cover;
@@ -33,19 +32,20 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    backdrop-filter: blur(6px); /* Efecto cristal para resaltar sobre el fondo */
+    backdrop-filter: blur(6px); 
 }
 
-/* Estilos para el logo SVG */
 .logo-container {
-    text-align: center;
     margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .main-logo {
-    max-width: 250px; /* Ajustá esto si el logo se ve muy chico o muy grande */
+    width: 50%;
     height: auto;
-    display: inline-block;
+    display: block;
 }
 
 input {
@@ -105,7 +105,7 @@ button:active {
 .result-card strong {
     display: block;
     margin-bottom: 15px;
-    font-size: 1.2em;
+    font-size: 1.56em; 
     color: #1a5276;
     text-transform: uppercase;
 }
@@ -121,15 +121,25 @@ button:active {
     border-bottom: none;
 }
 
-/* Colores para las probabilidades de los resultados */
 .res-verde {
     color: #27ae60;
 }
 
 .res-amarillo {
-    color: #d4ac0d; /* Tono mostaza para que se lea bien sobre blanco */
+    color: #d4ac0d; 
 }
 
 .res-naranja {
     color: #d35400;
+}
+
+.res-rojo {
+    color: #e74c3c;
+}
+
+/* Nueva clase para las etiquetas "probable / poco probable" */
+.etiqueta-prob {
+    font-weight: 400; /* Montserrat Regular */
+    font-size: 0.6em; /* 40% más chico que el tamaño del marcador (que es 1.1em) */
+    margin-left: 8px; /* Un pequeño margen para separarlo del número de goles */
 }

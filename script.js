@@ -49,7 +49,9 @@ function calcularPrediccion() {
     const r2 = ratings[p2] || 1;
     let diff = r1 - r2;
     
-    let ganador, perdedor;
+    let esEmpate = false;
+    let ganador, perdedor, ganadorDesempate;
+
     if (diff > 0) {
         ganador = p1;
         perdedor = p2;
@@ -57,25 +59,32 @@ function calcularPrediccion() {
         ganador = p2;
         perdedor = p1;
     } else {
-        ganador = p1;
-        perdedor = p2;
+        esEmpate = true;
+        ganadorDesempate = p1 < p2 ? p1 : p2;
     }
 
     const abs = Math.abs(diff);
-    const baseScore = abs === 0 ? 1 : abs;
-    
-    // Sin asteriscos acá tampoco
-    let headerText = abs === 0 
-        ? `Ganador ${ganador} +1 (Empate técnico resuelto por localía)` 
-        : `Ganador ${ganador} +${abs}`;
 
-    // Clases de CSS aplicadas y textos limpios
-    resDiv.innerHTML = `
-        <div class="result-card">
-            <strong>${headerText}</strong><br>
-            <div class="score-item res-verde">${ganador.toLowerCase()} ${baseScore} ${perdedor.toLowerCase()} 0 más probable</div>
-            <div class="score-item res-amarillo">${ganador.toLowerCase()} ${baseScore + 1} ${perdedor.toLowerCase()} 1 probable</div>
-            <div class="score-item res-naranja">${ganador.toLowerCase()} ${baseScore + 2} ${perdedor.toLowerCase()} 2 menos probable</div>
-        </div>
-    `;
+    if (esEmpate) {
+        resDiv.innerHTML = `
+            <div class="result-card">
+                <strong>EMPATE TÉCNICO</strong><br>
+                <div class="score-item res-verde">${p1} 1 ${p2} 1 <span class="etiqueta-prob">más probable</span></div>
+                <div class="score-item res-amarillo">${p1} 0 ${p2} 0 <span class="etiqueta-prob">probable</span></div>
+                <div class="score-item res-naranja">${p1} 2 ${p2} 2 <span class="etiqueta-prob">poco probable</span></div>
+                <div class="score-item" style="color: #666; font-size: 0.9em; font-weight: normal; margin-top: 10px; border-top: 1px solid #eaeaea; padding-top: 10px;">
+                    <em>Aclaración: Ante un desempate definitivo, ganaría ${ganadorDesempate}.</em>
+                </div>
+            </div>
+        `;
+    } else {
+        resDiv.innerHTML = `
+            <div class="result-card">
+                <strong>GANADOR <span class="res-rojo">${ganador}</span> <span class="res-verde">+${abs}</span></strong><br>
+                <div class="score-item res-verde">${ganador} ${abs} ${perdedor} 0 <span class="etiqueta-prob">más probable</span></div>
+                <div class="score-item res-amarillo">${ganador} ${abs + 1} ${perdedor} 1 <span class="etiqueta-prob">probable</span></div>
+                <div class="score-item res-naranja">${ganador} ${abs + 2} ${perdedor} 2 <span class="etiqueta-prob">poco probable</span></div>
+            </div>
+        `;
+    }
 }
