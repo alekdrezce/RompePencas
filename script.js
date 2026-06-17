@@ -1,11 +1,13 @@
+// Constante ya ordenada alfabéticamente de la A a la Z
 const equipos = [
-    "México", "Sudáfrica", "República de Corea", "República Checa", "Canadá", "Bosnia y Herzegovina", 
-    "Qatar", "Suiza", "Brasil", "Marruecos", "Haití", "Escocia", "Estados Unidos", "Paraguay", 
-    "Australia", "Turquía", "Alemania", "Curazao", "Costa de Marfil", "Ecuador", "Países Bajos", 
-    "Japón", "Suecia", "Túnez", "Bélgica", "Egipto", "RI de Irán", "Nueva Zelanda", "España", 
-    "Cabo Verde", "Arabia Saudita", "Uruguay", "Francia", "Senegal", "Irak", "Noruega", "Argentina", 
-    "Austria", "Argelia", "Jordania", "Portugal", "Uzbekistán", "Colombia", "RD Congo", "Inglaterra", 
-    "Ghana", "Panamá", "Croacia"
+    "Alemania", "Arabia Saudita", "Argelia", "Argentina", "Australia", "Austria", 
+    "Bélgica", "Bosnia y Herzegovina", "Brasil", "Cabo Verde", "Canadá", "Colombia", 
+    "Costa de Marfil", "Croacia", "Curazao", "Ecuador", "Egipto", "Escocia", "España", 
+    "Estados Unidos", "Francia", "Ghana", "Haití", "Inglaterra", "Irak", "Japón", 
+    "Jordania", "Marruecos", "México", "Noruega", "Nueva Zelanda", "Panamá", 
+    "Paraguay", "Países Bajos", "Portugal", "Qatar", "RD Congo", "RI de Irán", 
+    "República Checa", "República de Corea", "Senegal", "Sudáfrica", "Suecia", 
+    "Suiza", "Turquía", "Túnez", "Uruguay", "Uzbekistán"
 ];
 
 const ratings = {
@@ -22,10 +24,8 @@ const ratings = {
 document.addEventListener("DOMContentLoaded", () => {
     const datalist = document.getElementById('equipos');
     if (datalist) {
-        // Ordenamos alfabéticamente respetando el idioma español (tildes, etc.)
-        const equiposOrdenados = [...equipos].sort((a, b) => a.localeCompare(b, 'es'));
-        
-        equiposOrdenados.forEach(eq => {
+        // Al estar ya ordenada la constante, solo la recorremos directamente
+        equipos.forEach(eq => {
             let opt = document.createElement('option');
             opt.value = eq;
             datalist.appendChild(opt);
@@ -69,6 +69,7 @@ function calcularPrediccion() {
 
     const abs = Math.abs(diff);
 
+    // Los nombres de los países ahora se imprimen exactamente como están en la constante (Inicial mayúscula)
     if (esEmpate) {
         resDiv.innerHTML = `
             <div class="result-card">
