@@ -1,21 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 :root {
-    /* Reemplazá estos valores con los hexadecimales de tu diseño */
-    --color-principal: #27ae60; 
-    --color-secundario: #219150;
-    --color-texto: #1a1a1a;
-    --fondo-tarjeta: rgba(255, 255, 255, 0.92); /* Fondo blanco translúcido */
+    --primary-color: #27ae60; 
+    --card-bg: rgba(255, 255, 255, 0.92);
+    --text-color: #1a1a1a;
 }
 
 body {
-    /* Reemplazá con la fuente que habías elegido */
-    font-family: sans-serif; 
-    color: var(--color-texto);
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
     margin: 0;
     padding: 20px;
     
-    /* Configuración de tu imagen de fondo */
-    background-color: #333; 
-    background-image: url('tu-fondo.jpg'); /* <-- Ruta de tu archivo de fondo */
+    /* Configuración de tu imagen de fondo en la carpeta assets */
+    background-color: #f4f4f9; 
+    background-image: url('assets/fondo.svg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -30,31 +29,23 @@ body {
 .container {
     width: 100%;
     max-width: 500px;
-    background: var(--fondo-tarjeta);
+    background: var(--card-bg);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px); /* Difumina un poco el fondo detrás de la tarjeta */
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    backdrop-filter: blur(6px); /* Efecto cristal para resaltar sobre el fondo */
 }
 
-/* --- Estilos del Logo --- */
+/* Estilos para el logo SVG */
 .logo-container {
     text-align: center;
-    margin-bottom: 15px;
-}
-
-.logo {
-    max-width: 220px; /* Ajustá este valor si el logo te queda muy grande o chico */
-    height: auto;
-}
-/* ------------------------ */
-
-h2 {
-    text-align: center;
-    color: #2c3e50;
     margin-bottom: 25px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+}
+
+.main-logo {
+    max-width: 250px; /* Ajustá esto si el logo se ve muy chico o muy grande */
+    height: auto;
+    display: inline-block;
 }
 
 input {
@@ -64,8 +55,9 @@ input {
     border: 2px solid #eee;
     border-radius: 8px;
     box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
     color: #333;
     background-color: rgba(255, 255, 255, 0.9);
     transition: border-color 0.3s;
@@ -73,19 +65,20 @@ input {
 
 input:focus {
     outline: none;
-    border-color: var(--color-principal);
+    border-color: var(--primary-color);
 }
 
 button {
     width: 100%;
     padding: 14px;
     margin-top: 20px;
-    background-color: var(--color-principal);
+    background-color: var(--primary-color);
     color: white;
     border: none;
     border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -93,7 +86,7 @@ button {
 }
 
 button:hover {
-    background-color: var(--color-secundario);
+    background-color: #219150;
 }
 
 button:active {
@@ -103,7 +96,7 @@ button:active {
 .result-card {
     margin-top: 25px;
     padding: 20px;
-    border-left: 6px solid var(--color-principal);
+    border-left: 6px solid var(--primary-color);
     background: rgba(249, 255, 251, 0.95);
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -114,16 +107,29 @@ button:active {
     margin-bottom: 15px;
     font-size: 1.2em;
     color: #1a5276;
+    text-transform: uppercase;
 }
 
 .score-item {
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #eaeaea;
     font-size: 1.1em;
-    font-weight: bold;
-    color: #2c3e50;
+    font-weight: 700;
 }
 
 .score-item:last-child {
     border-bottom: none;
+}
+
+/* Colores para las probabilidades de los resultados */
+.res-verde {
+    color: #27ae60;
+}
+
+.res-amarillo {
+    color: #d4ac0d; /* Tono mostaza para que se lea bien sobre blanco */
+}
+
+.res-naranja {
+    color: #d35400;
 }
