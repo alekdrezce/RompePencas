@@ -1,81 +1,119 @@
-/* Configuración base moderna */
+/* Importamos Montserrat en sus variantes Regular (400) y Bold (700) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 :root {
-    --primary-color: #27ae60; /* Verde campo */
-    --bg-color: #f4f4f9;
-    --text-color: #333;
-    --card-bg: #ffffff;
+    --primary-color: #27ae60; 
+    --card-bg: rgba(255, 255, 255, 0.95); /* Fondo blanco apenas translúcido para que destaque sobre el SVG */
+    --text-color: #1a1a1a;
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-color);
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-color);
-    line-height: 1.6;
     margin: 0;
     padding: 20px;
+    
+    /* Configuración para el fondo SVG minimalista */
+    background-color: #f4f4f9;
+    /* Podés reemplazar la URL de abajo por la ruta de tu propio archivo, ej: url('fondo.svg') */
+    background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%2327ae60" fill-opacity="0.05" fill-rule="evenodd"%3E%3Ccircle cx="3" cy="3" r="3"/%3E%3Ccircle cx="13" cy="13" r="3"/%3E%3C/g%3E%3C/svg%3E');
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh; /* Centra el contenedor verticalmente */
 }
 
 .container {
+    width: 100%;
     max-width: 500px;
-    margin: 40px auto;
     background: var(--card-bg);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    backdrop-filter: blur(4px); /* Le da un toque moderno si el SVG tiene muchos detalles */
 }
 
 h2 {
     text-align: center;
+    font-weight: 700; /* Montserrat Bold */
     color: #2c3e50;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 input {
     width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
+    font-weight: 700; /* Los nombres de los equipos se ven en Bold al tipear */
+    color: #333;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 button {
     width: 100%;
-    padding: 12px;
-    margin-top: 15px;
+    padding: 14px;
+    margin-top: 20px;
     background-color: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700; /* Botón en Bold */
     cursor: pointer;
-    transition: background 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.1s, background-color 0.3s;
 }
 
 button:hover {
     background-color: #219150;
 }
 
-/* Tarjeta de Resultados (Visualizando la matriz[cite: 1, 2]) */
+button:active {
+    transform: scale(0.98); /* Efecto sutil de click */
+}
+
+/* Tarjeta donde se imprimen los resultados */
 .result-card {
     margin-top: 25px;
     padding: 20px;
     border-left: 6px solid var(--primary-color);
     background: #f9fffb;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
 
 .result-card strong {
     display: block;
-    margin-bottom: 10px;
-    font-size: 1.1em;
+    margin-bottom: 15px;
+    font-size: 1.2em;
     color: #1a5276;
+    font-weight: 700;
 }
 
+/* Acá aplicamos el Montserrat Bold a los resultados específicos como querías */
 .score-item {
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    border-bottom: 1px solid #eaeaea;
+    font-weight: 700; 
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+
+.score-item:last-child {
+    border-bottom: none;
 }

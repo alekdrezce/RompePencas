@@ -1,73 +1,87 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Simulador Mundial 2026</title>
-    <style>
-        .container { font-family: sans-serif; max-width: 600px; margin: 20px auto; }
-        .result-card { border: 1px solid #ccc; padding: 10px; margin: 5px 0; border-radius: 5px; }
-        .score { font-weight: bold; color: #2c3e50; }
-    </style>
-</head>
-<body>
+// Los 48 participantes confirmados
+const equipos = [
+    "México", "Sudáfrica", "República de Corea", "República Checa", "Canadá", "Bosnia y Herzegovina", 
+    "Qatar", "Suiza", "Brasil", "Marruecos", "Haití", "Escocia", "Estados Unidos", "Paraguay", 
+    "Australia", "Turquía", "Alemania", "Curazao", "Costa de Marfil", "Ecuador", "Países Bajos", 
+    "Japón", "Suecia", "Túnez", "Bélgica", "Egipto", "RI de Irán", "Nueva Zelanda", "España", 
+    "Cabo Verde", "Arabia Saudita", "Uruguay", "Francia", "Senegal", "Irak", "Noruega", "Argentina", 
+    "Austria", "Argelia", "Jordania", "Portugal", "Uzbekistán", "Colombia", "RD Congo", "Inglaterra", 
+    "Ghana", "Panamá", "Croacia"
+];
 
-<div class="container">
-    <h2>Calculadora de Probabilidades</h2>
-    <input list="equipos" id="p1" placeholder="Equipo Local">
-    <input list="equipos" id="p2" placeholder="Equipo Visitante">
-    <button onclick="predecir()">Calcular</button>
-    
-    <div id="resultado"></div>
-
-    <datalist id="equipos">
-        <!-- Lista simplificada de participantes basada en tu entrada -->
-        <option value="Alemania"><option value="Argentina"><option value="Brasil"><option value="España"><option value="Inglaterra">
-        <option value="México"><option value="Colombia"><option value="Uruguay"><option value="Bélgica"><option value="Francia">
-        <option value="Países Bajos"><option value="Suiza"><option value="Croacia"><option value="Portugal"><option value="Senegal">
-        <option value="Corea del Sur"><option value="Japón"><option value="Marruecos"><option value="Canadá"><option value="Australia">
-    </datalist>
-</div>
-
-<script>
-// Datos objetivos basados en 'Proyección Ajustada - Diferencia de Goles Mundial 2026'
-const diferenciasMatrix = {
-    "Alemania": { "Argentina": 0, "Brasil": 0, "España": 0, "Francia": 0, "Inglaterra": 0, "Uruguay": +1 },
-    "Argentina": { "Alemania": 0, "Brasil": 0, "España": 0, "Francia": 0, "Inglaterra": 0, "Uruguay": +1 },
-    "Brasil": { "Alemania": 0, "Argentina": 0, "España": 0, "Francia": 0, "Inglaterra": 0, "Uruguay": +1 },
-    "España": { "Alemania": 0, "Argentina": 0, "Brasil": 0, "Francia": 0, "Inglaterra": 0, "Uruguay": +1 },
-    "Inglaterra": { "Alemania": 0, "Argentina": 0, "Brasil": 0, "España": 0, "Francia": 0, "Uruguay": +1 },
-    "Uruguay": { "Alemania": -1, "Argentina": -1, "Brasil": -1, "España": -1, "Inglaterra": -1 }
-    // Nota: Puedes agregar el resto de los 48 equipos siguiendo este formato con los datos de
+// Ratings de fuerza (1 a 5) para que el cálculo sea automático y objetivo
+const ratings = {
+    "Argentina": 5, "Francia": 5, "Brasil": 5, "España": 5, "Inglaterra": 5,
+    "Alemania": 4, "Países Bajos": 4, "Portugal": 4, "Uruguay": 4, "Bélgica": 4, "Croacia": 4, "Colombia": 4,
+    "México": 3, "Suiza": 3, "Senegal": 3, "Ecuador": 3, "Japón": 3, "Marruecos": 3, "Suecia": 3, 
+    "República Checa": 3, "Austria": 3, "Turquía": 3, "Estados Unidos": 3, "República de Corea": 3,
+    "Argelia": 2, "Escocia": 2, "Costa de Marfil": 2, "Ghana": 2, "RI de Irán": 2, "Noruega": 2, 
+    "Australia": 2, "Paraguay": 2, "Canadá": 2, "Egipto": 2, "Bosnia y Herzegovina": 2,
+    "Túnez": 1, "Arabia Saudita": 1, "Uzbekistán": 1, "Sudáfrica": 1, "Panamá": 1, "Nueva Zelanda": 1, 
+    "Irak": 1, "Jordania": 1, "RD Congo": 1, "Cabo Verde": 1, "Haití": 1, "Curazao": 1, "Qatar": 1
 };
 
-function predecir() {
+// Cargar la lista desplegable ni bien carga la página
+document.addEventListener("DOMContentLoaded", () => {
+    const datalist = document.getElementById('equipos');
+    if (datalist) {
+        equipos.forEach(eq => {
+            let opt = document.createElement('option');
+            opt.value = eq;
+            datalist.appendChild(opt);
+        });
+    }
+});
+
+function calcularPrediccion() {
     const p1 = document.getElementById('p1').value;
     const p2 = document.getElementById('p2').value;
-    const container = document.getElementById('resultado');
-    container.innerHTML = "";
+    const resDiv = document.getElementById('resultado');
 
-    if (!diferenciasMatrix[p1] || !diferenciasMatrix[p1][p2]) {
-        container.innerHTML = "Datos no disponibles para este cruce.";
+    // Validación por si escriben cualquier cosa
+    if (!equipos.includes(p1) || !equipos.includes(p2)) {
+        resDiv.innerHTML = "<p style='color:red;'>Asegurate de elegir dos equipos válidos de la lista.</p>";
         return;
     }
 
-    const diff = diferenciasMatrix[p1][p2];
-    
-    // Lógica de 3 resultados (Diferencia, Dif+1, Dif+2)
-    const resultados = [
-        { label: "Más probable", score: `${Math.abs(diff)}-0` },
-        { label: "Probable", score: `${Math.abs(diff)+1}-1` },
-        { label: "Poco probable", score: `${Math.abs(diff)+2}-2` }
-    ];
+    if (p1 === p2) {
+        resDiv.innerHTML = "<p style='color:red;'>Elegí equipos distintos.</p>";
+        return;
+    }
 
-    container.innerHTML = `<h3>Predicción para ${p1} vs ${p2} (Dif: ${diff})</h3>`;
-    resultados.forEach(res => {
-        container.innerHTML += `
-            <div class="result-card">
-                ${res.label}: <span class="score">${p1} ${res.score} ${p2}</span>
-            </div>`;
-    });
+    const r1 = ratings[p1] || 1;
+    const r2 = ratings[p2] || 1;
+    let diff = r1 - r2;
+    
+    // Determinar quién gana
+    let ganador, perdedor;
+    if (diff > 0) {
+        ganador = p1;
+        perdedor = p2;
+    } else if (diff < 0) {
+        ganador = p2;
+        perdedor = p1;
+    } else {
+        // Si hay empate en estadísticas, le damos la mínima al local para que devuelva el formato que pediste
+        ganador = p1;
+        perdedor = p2;
+    }
+
+    const abs = Math.abs(diff);
+    
+    // Si la diferencia original era 0, la base del resultado arranca en 1 para forzar un ganador
+    const baseScore = abs === 0 ? 1 : abs;
+    
+    let headerText = abs === 0 
+        ? `Ganador ${ganador} *+1* (Empate técnico resuelto por localía)` 
+        : `Ganador ${ganador} *+${abs}*`;
+
+    resDiv.innerHTML = `
+        <div class="result-card">
+            <strong>${headerText}</strong><br>
+            <div class="score-item">${ganador.toLowerCase()} ${baseScore} ${perdedor.toLowerCase()} 0 *más probable*</div>
+            <div class="score-item">${ganador.toLowerCase()} ${baseScore + 1} ${perdedor.toLowerCase()} 1 *probable*</div>
+            <div class="score-item">${ganador.toLowerCase()} ${baseScore + 2} ${perdedor.toLowerCase()} 2 *menos probable*</div>
+        </div>
+    `;
 }
-</script>
-</body>
-</html>
