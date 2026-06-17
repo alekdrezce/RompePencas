@@ -1,42 +1,56 @@
-/* Importamos Montserrat en sus variantes Regular (400) y Bold (700) */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
 :root {
-    --primary-color: #27ae60; 
-    --card-bg: rgba(255, 255, 255, 0.95); /* Fondo blanco apenas translúcido para que destaque sobre el SVG */
-    --text-color: #1a1a1a;
+    /* Reemplazá estos valores con los hexadecimales de tu diseño */
+    --color-principal: #27ae60; 
+    --color-secundario: #219150;
+    --color-texto: #1a1a1a;
+    --fondo-tarjeta: rgba(255, 255, 255, 0.92); /* Fondo blanco translúcido */
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
-    color: var(--text-color);
+    /* Reemplazá con la fuente que habías elegido */
+    font-family: sans-serif; 
+    color: var(--color-texto);
     margin: 0;
     padding: 20px;
     
-    /* Configuración para el fondo SVG minimalista */
-    background-color: #f4f4f9;
-    /* Podés reemplazar la URL de abajo por la ruta de tu propio archivo, ej: url('fondo.svg') */
-    background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%2327ae60" fill-opacity="0.05" fill-rule="evenodd"%3E%3Ccircle cx="3" cy="3" r="3"/%3E%3Ccircle cx="13" cy="13" r="3"/%3E%3C/g%3E%3C/svg%3E');
+    /* Configuración de tu imagen de fondo */
+    background-color: #333; 
+    background-image: url('tu-fondo.jpg'); /* <-- Ruta de tu archivo de fondo */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 90vh; /* Centra el contenedor verticalmente */
+    min-height: 90vh;
 }
 
 .container {
     width: 100%;
     max-width: 500px;
-    background: var(--card-bg);
+    background: var(--fondo-tarjeta);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    backdrop-filter: blur(4px); /* Le da un toque moderno si el SVG tiene muchos detalles */
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(6px); /* Difumina un poco el fondo detrás de la tarjeta */
 }
+
+/* --- Estilos del Logo --- */
+.logo-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.logo {
+    max-width: 220px; /* Ajustá este valor si el logo te queda muy grande o chico */
+    height: auto;
+}
+/* ------------------------ */
 
 h2 {
     text-align: center;
-    font-weight: 700; /* Montserrat Bold */
     color: #2c3e50;
     margin-bottom: 25px;
     text-transform: uppercase;
@@ -50,29 +64,28 @@ input {
     border: 2px solid #eee;
     border-radius: 8px;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
-    font-weight: 700; /* Los nombres de los equipos se ven en Bold al tipear */
+    font-weight: bold;
     color: #333;
+    background-color: rgba(255, 255, 255, 0.9);
     transition: border-color 0.3s;
 }
 
 input:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--color-principal);
 }
 
 button {
     width: 100%;
     padding: 14px;
     margin-top: 20px;
-    background-color: var(--primary-color);
+    background-color: var(--color-principal);
     color: white;
     border: none;
     border-radius: 8px;
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
-    font-weight: 700; /* Botón en Bold */
+    font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -80,21 +93,20 @@ button {
 }
 
 button:hover {
-    background-color: #219150;
+    background-color: var(--color-secundario);
 }
 
 button:active {
-    transform: scale(0.98); /* Efecto sutil de click */
+    transform: scale(0.98);
 }
 
-/* Tarjeta donde se imprimen los resultados */
 .result-card {
     margin-top: 25px;
     padding: 20px;
-    border-left: 6px solid var(--primary-color);
-    background: #f9fffb;
+    border-left: 6px solid var(--color-principal);
+    background: rgba(249, 255, 251, 0.95);
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 .result-card strong {
@@ -102,15 +114,13 @@ button:active {
     margin-bottom: 15px;
     font-size: 1.2em;
     color: #1a5276;
-    font-weight: 700;
 }
 
-/* Acá aplicamos el Montserrat Bold a los resultados específicos como querías */
 .score-item {
     padding: 8px 0;
     border-bottom: 1px solid #eaeaea;
-    font-weight: 700; 
     font-size: 1.1em;
+    font-weight: bold;
     color: #2c3e50;
 }
 
