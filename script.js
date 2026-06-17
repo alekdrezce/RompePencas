@@ -22,7 +22,10 @@ const ratings = {
 document.addEventListener("DOMContentLoaded", () => {
     const datalist = document.getElementById('equipos');
     if (datalist) {
-        equipos.forEach(eq => {
+        // Ordenamos alfabéticamente respetando el idioma español (tildes, etc.)
+        const equiposOrdenados = [...equipos].sort((a, b) => a.localeCompare(b, 'es'));
+        
+        equiposOrdenados.forEach(eq => {
             let opt = document.createElement('option');
             opt.value = eq;
             datalist.appendChild(opt);
@@ -60,7 +63,8 @@ function calcularPrediccion() {
         perdedor = p1;
     } else {
         esEmpate = true;
-        ganadorDesempate = p1 < p2 ? p1 : p2;
+        // Definimos un ganador de desempate por orden alfabético
+        ganadorDesempate = p1.localeCompare(p2, 'es') < 0 ? p1 : p2;
     }
 
     const abs = Math.abs(diff);
