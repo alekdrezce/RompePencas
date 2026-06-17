@@ -8,15 +8,16 @@
 </head>
 <body>
     <div class="container">
-        <h2><div class="logo-container">
-    <!-- Reemplazá 'tu-logo.png' con el nombre exacto de tu imagen -->
-    <img src="logo.svg" alt="Logo RompePencas" class="logo">
-</div></h2>
+        <!-- Contenedor del logo llamando a la carpeta assets -->
+        <div class="logo-container">
+            <img src="assets/logo.svg" alt="RompePencas Logo" class="main-logo">
+        </div>
         
         <input list="equipos" id="p1" placeholder="Equipo Local">
         <input list="equipos" id="p2" placeholder="Equipo Visitante">
         
-        <button onclick="calcularPrediccion()">Calcular Probabilidades</button>
+        <!-- Botón actualizado -->
+        <button onclick="calcularPrediccion()">RESULTADO</button>
         
         <div id="resultado"></div>
 

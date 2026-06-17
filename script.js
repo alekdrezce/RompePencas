@@ -1,4 +1,3 @@
-// Los 48 participantes confirmados
 const equipos = [
     "México", "Sudáfrica", "República de Corea", "República Checa", "Canadá", "Bosnia y Herzegovina", 
     "Qatar", "Suiza", "Brasil", "Marruecos", "Haití", "Escocia", "Estados Unidos", "Paraguay", 
@@ -9,7 +8,6 @@ const equipos = [
     "Ghana", "Panamá", "Croacia"
 ];
 
-// Ratings de fuerza (1 a 5) para que el cálculo sea automático y objetivo
 const ratings = {
     "Argentina": 5, "Francia": 5, "Brasil": 5, "España": 5, "Inglaterra": 5,
     "Alemania": 4, "Países Bajos": 4, "Portugal": 4, "Uruguay": 4, "Bélgica": 4, "Croacia": 4, "Colombia": 4,
@@ -21,7 +19,6 @@ const ratings = {
     "Irak": 1, "Jordania": 1, "RD Congo": 1, "Cabo Verde": 1, "Haití": 1, "Curazao": 1, "Qatar": 1
 };
 
-// Cargar la lista desplegable ni bien carga la página
 document.addEventListener("DOMContentLoaded", () => {
     const datalist = document.getElementById('equipos');
     if (datalist) {
@@ -38,7 +35,6 @@ function calcularPrediccion() {
     const p2 = document.getElementById('p2').value;
     const resDiv = document.getElementById('resultado');
 
-    // Validación por si escriben cualquier cosa
     if (!equipos.includes(p1) || !equipos.includes(p2)) {
         resDiv.innerHTML = "<p style='color:red;'>Asegurate de elegir dos equipos válidos de la lista.</p>";
         return;
@@ -53,7 +49,6 @@ function calcularPrediccion() {
     const r2 = ratings[p2] || 1;
     let diff = r1 - r2;
     
-    // Determinar quién gana
     let ganador, perdedor;
     if (diff > 0) {
         ganador = p1;
@@ -62,26 +57,25 @@ function calcularPrediccion() {
         ganador = p2;
         perdedor = p1;
     } else {
-        // Si hay empate en estadísticas, le damos la mínima al local para que devuelva el formato que pediste
         ganador = p1;
         perdedor = p2;
     }
 
     const abs = Math.abs(diff);
-    
-    // Si la diferencia original era 0, la base del resultado arranca en 1 para forzar un ganador
     const baseScore = abs === 0 ? 1 : abs;
     
+    // Sin asteriscos acá tampoco
     let headerText = abs === 0 
-        ? `Ganador ${ganador} *+1* (Empate técnico resuelto por localía)` 
-        : `Ganador ${ganador} *+${abs}*`;
+        ? `Ganador ${ganador} +1 (Empate técnico resuelto por localía)` 
+        : `Ganador ${ganador} +${abs}`;
 
+    // Clases de CSS aplicadas y textos limpios
     resDiv.innerHTML = `
         <div class="result-card">
             <strong>${headerText}</strong><br>
-            <div class="score-item">${ganador.toLowerCase()} ${baseScore} ${perdedor.toLowerCase()} 0 *más probable*</div>
-            <div class="score-item">${ganador.toLowerCase()} ${baseScore + 1} ${perdedor.toLowerCase()} 1 *probable*</div>
-            <div class="score-item">${ganador.toLowerCase()} ${baseScore + 2} ${perdedor.toLowerCase()} 2 *menos probable*</div>
+            <div class="score-item res-verde">${ganador.toLowerCase()} ${baseScore} ${perdedor.toLowerCase()} 0 más probable</div>
+            <div class="score-item res-amarillo">${ganador.toLowerCase()} ${baseScore + 1} ${perdedor.toLowerCase()} 1 probable</div>
+            <div class="score-item res-naranja">${ganador.toLowerCase()} ${baseScore + 2} ${perdedor.toLowerCase()} 2 menos probable</div>
         </div>
     `;
 }
