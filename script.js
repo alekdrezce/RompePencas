@@ -22,15 +22,23 @@ const ratings = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const datalist = document.getElementById('equipos');
-    if (datalist) {
-        // Al estar ya ordenada la constante, solo la recorremos directamente
-        equipos.forEach(eq => {
-            let opt = document.createElement('option');
-            opt.value = eq;
-            datalist.appendChild(opt);
-        });
-    }
+    const p1 = document.getElementById('p1');
+    const p2 = document.getElementById('p2');
+    
+    // Ordenamos alfabéticamente
+    const equiposOrdenados = [...equipos].sort((a, b) => a.localeCompare(b, 'es'));
+    
+    equiposOrdenados.forEach(eq => {
+        let opt1 = document.createElement('option');
+        opt1.value = eq;
+        opt1.innerHTML = eq;
+        p1.appendChild(opt1);
+        
+        let opt2 = document.createElement('option');
+        opt2.value = eq;
+        opt2.innerHTML = eq;
+        p2.appendChild(opt2);
+    });
 });
 
 function calcularPrediccion() {

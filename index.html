@@ -13,8 +13,12 @@
             <img src="assets/logo.svg" alt="RompePencas Logo" class="main-logo">
         </div>
         
-        <input list="equipos" id="p1" placeholder="Equipo Local">
-        <input list="equipos" id="p2" placeholder="Equipo Visitante">
+        <select id="p1">
+    <option value="" disabled selected>Selecciona Equipo Local</option>
+</select>
+<select id="p2">
+    <option value="" disabled selected>Selecciona Equipo Visitante</option>
+</select>
         
         <!-- Botón actualizado -->
         <button onclick="calcularPrediccion()">RESULTADO</button>

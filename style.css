@@ -48,7 +48,8 @@ body {
     display: block;
 }
 
-input {
+/* Cambia esto en tu CSS */
+input, select {
     width: 100%;
     padding: 12px 15px;
     margin: 10px 0;
