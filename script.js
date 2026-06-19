@@ -125,11 +125,19 @@ function calcularPrediccion() {
     const cap1 = getCapacidades(p1);
     const cap2 = getCapacidades(p2);
 
-    // 1. Cálculo de Goles Esperados (xG) CALIBRADO A LA BAJA
-    // Aumentamos el divisor a 3.8 para "comprimir" la diferencia y evitar goleadas irreales.
-    // Sumamos un piso de 0.5 goles para asegurar que el 0-0 no sea siempre el único destino en partidos parejos.
-    const golProbA = Math.max(0.5, (cap1.ataque - cap2.defensa + (cap1.soporte * 0.15)) / 3.8);
-    const golProbB = Math.max(0.5, (cap2.ataque - cap1.defensa + (cap2.soporte * 0.15)) / 3.8);
+    // 1. NUEVO CÁLCULO DE xG (Goles Esperados) BASADO EN RATIOS ANALÍTICOS
+    // Al dividir en lugar de restar, premiamos la vocación ofensiva. 
+    // Si dos potencias chocan, el ratio se mantiene alto y habilita empates 2-2 o victorias 3-2.
+    const ratioOfensivoA = cap1.ataque / cap2.defensa; 
+    const ratioOfensivoB = cap2.ataque / cap1.defensa;
+    
+    // El "Soporte" (DT, Histórico, Banco) ahora funciona como un multiplicador de jerarquía
+    const pesoSoporteA = cap1.soporte / 40; 
+    const pesoSoporteB = cap2.soporte / 40;
+
+    // Fórmula base: 1.3 es el promedio de goles histórico por equipo en mundiales.
+    const golProbA = (ratioOfensivoA * 1.3) + (pesoSoporteA * 0.6);
+    const golProbB = (ratioOfensivoB * 1.3) + (pesoSoporteB * 0.6);
 
     let resultadosExactos = [];
     let diffAgrupadas = {};
