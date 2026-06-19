@@ -127,11 +127,6 @@ function calcularPrediccion() {
     const f2 = dbEquipos[p2].reduce((a, b) => a + b, 0);
     const diffTotal = f1 - f2;
 
-// Calculamos el puntaje global para medir la "Brecha de Jerarquía"
-    const f1 = dbEquipos[p1].reduce((a, b) => a + b, 0);
-    const f2 = dbEquipos[p2].reduce((a, b) => a + b, 0);
-    const diffTotal = f1 - f2;
-
     const cap1 = getCapacidades(p1);
     const cap2 = getCapacidades(p2);
 
@@ -162,9 +157,8 @@ function calcularPrediccion() {
     let diffAgrupadas = {};
     let totalProb = 0;
 
-    // 3. Simulamos todos los resultados posibles (AUMENTAMOS DE 7 A 8 PARA PALIZAS)
+    // 3. Simulamos todos los resultados posibles (de 0 a 8 goles)
     for(let i = 0; i <= 8; i++) {
-        for(let j = 0; j <= 8; j++) {
         for(let j = 0; j <= 8; j++) {
             let prob = poisson(i, golProbA) * poisson(j, golProbB);
             let diff = i - j;
