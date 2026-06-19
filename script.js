@@ -122,30 +122,38 @@ function calcularPrediccion() {
 
     if (!p1 || !p2 || p1 === p2) return;
 
+    // Calculamos el puntaje global para medir la "Brecha de Jerarquía"
+    const f1 = dbEquipos[p1].reduce((a, b) => a + b, 0);
+    const f2 = dbEquipos[p2].reduce((a, b) => a + b, 0);
+    const diffTotal = f1 - f2;
+
     const cap1 = getCapacidades(p1);
     const cap2 = getCapacidades(p2);
 
-    // 1. NUEVO CÁLCULO DE xG (Goles Esperados) BASADO EN RATIOS ANALÍTICOS
-    // Al dividir en lugar de restar, premiamos la vocación ofensiva. 
-    // Si dos potencias chocan, el ratio se mantiene alto y habilita empates 2-2 o victorias 3-2.
-    const ratioOfensivoA = cap1.ataque / cap2.defensa; 
-    const ratioOfensivoB = cap2.ataque / cap1.defensa;
-    
-    // El "Soporte" (DT, Histórico, Banco) ahora funciona como un multiplicador de jerarquía
-    const pesoSoporteA = cap1.soporte / 40; 
-    const pesoSoporteB = cap2.soporte / 40;
+    // 1. xG Base (Goles Esperados) por choque de líneas
+    let golProbA = (cap1.ataque / cap2.defensa) * 1.1;
+    let golProbB = (cap2.ataque / cap1.defensa) * 1.1;
 
-    // Fórmula base: 1.3 es el promedio de goles histórico por equipo en mundiales.
-    const golProbA = (ratioOfensivoA * 1.3) + (pesoSoporteA * 0.6);
-    const golProbB = (ratioOfensivoB * 1.3) + (pesoSoporteB * 0.6);
+    // 2. MULTIPLICADOR DE DOMINIO (La clave para resultados realistas)
+    // Si un equipo le saca más de 8 puntos globales de diferencia al otro, es una superioridad táctica abrumadora.
+    // Esto dispara la probabilidad de goleada del fuerte y "apaga" el ataque del débil.
+    if (diffTotal > 8) {
+        let ventaja = diffTotal - 8;
+        golProbA += (ventaja * 0.15); // Suma xG directo (ej: 20 pts de dif = +3 goles esperados)
+        golProbB = Math.max(0.1, golProbB - (ventaja * 0.05)); // Hunde las chances del débil
+    } else if (diffTotal < -8) {
+        let ventaja = Math.abs(diffTotal) - 8;
+        golProbB += (ventaja * 0.15);
+        golProbA = Math.max(0.1, golProbA - (ventaja * 0.05));
+    }
 
     let resultadosExactos = [];
     let diffAgrupadas = {};
     let totalProb = 0;
 
-    // 2. Simulamos todos los resultados posibles (0-0 hasta 7-7) con Poisson
-    for(let i = 0; i <= 7; i++) {
-        for(let j = 0; j <= 7; j++) {
+    // 3. Simulamos con Poisson (de 0 a 8 goles para dar margen a palizas)
+    for(let i = 0; i <= 8; i++) {
+        for(let j = 0; j <= 8; j++) {
             let prob = poisson(i, golProbA) * poisson(j, golProbB);
             let diff = i - j;
             
@@ -157,13 +165,13 @@ function calcularPrediccion() {
         }
     }
 
-    // 3. Obtenemos las 3 diferencias más probables ordenadas por porcentaje
+    // 4. Obtenemos las 3 diferencias matemáticas más probables
     let top3Diffs = Object.keys(diffAgrupadas).map(d => ({
         diff: parseInt(d),
         prob: diffAgrupadas[d] / totalProb
     })).sort((a, b) => b.prob - a.prob).slice(0, 3);
 
-    // 4. Armamos el HTML limpio
+    // 5. Renderizado final
     let htmlSalida = `<div class="result-card">`;
 
     top3Diffs.forEach((item) => {
@@ -179,7 +187,6 @@ function calcularPrediccion() {
             tituloDiff = `Victoria de ${p2} por ${Math.abs(d)} <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
         }
 
-        // Buscamos los 3 marcadores exactos con más probabilidad para ESA diferencia
         let top3Resultados = resultadosExactos.filter(r => r.diff === d)
             .sort((a, b) => b.prob - a.prob)
             .slice(0, 3);
