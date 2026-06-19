@@ -99,7 +99,7 @@ function calcularPrediccion() {
     const cap1 = getCapacidades(p1);
     const cap2 = getCapacidades(p2);
 
-    // 2. Motor Táctico (Divisor 2.5 para mantener agresividad en las diferencias reales)
+    // 2. Motor Táctico (Divisor 2.5 para mantener agresividad en las diferenciasreales)
     const golProbA = Math.max(0.5, (cap1.ataque - cap2.defensa + (cap1.soporte * 0.2)) / 2.5);
     const golProbB = Math.max(0.5, (cap2.ataque - cap1.defensa + (cap2.soporte * 0.2)) / 2.5);
 
