@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const p1 = document.getElementById('p1');
     const p2 = document.getElementById('p2');
     
-    // Chequeo de seguridad: te avisa en la consola si los IDs del HTML no coinciden
+    // Chequeo de seguridad: te avisa en la consola si losIDs del HTML no coinciden
     if (!p1 || !p2) {
         console.error("¡Ojo! El script no encuentra los <select> con id='p1' y id='p2' en tu HTML.");
         return;
