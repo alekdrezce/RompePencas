@@ -127,20 +127,31 @@ function calcularPrediccion() {
     const f2 = dbEquipos[p2].reduce((a, b) => a + b, 0);
     const diffTotal = f1 - f2;
 
+// Calculamos el puntaje global para medir la "Brecha de Jerarquía"
+    const f1 = dbEquipos[p1].reduce((a, b) => a + b, 0);
+    const f2 = dbEquipos[p2].reduce((a, b) => a + b, 0);
+    const diffTotal = f1 - f2;
+
     const cap1 = getCapacidades(p1);
     const cap2 = getCapacidades(p2);
 
-    // 1. xG Base (Goles Esperados) por choque de líneas
-    let golProbA = (cap1.ataque / cap2.defensa) * 1.1;
-    let golProbB = (cap2.ataque / cap1.defensa) * 1.1;
+    // 1. CÁLCULO DE xG (Goles Esperados) BASADO EN RATIOS ANALÍTICOS
+    let ratioOfensivoA = cap1.ataque / cap2.defensa; 
+    let ratioOfensivoB = cap2.ataque / cap1.defensa;
+    
+    let pesoSoporteA = cap1.soporte / 40; 
+    let pesoSoporteB = cap2.soporte / 40;
 
-    // 2. MULTIPLICADOR DE DOMINIO (La clave para resultados realistas)
-    // Si un equipo le saca más de 8 puntos globales de diferencia al otro, es una superioridad táctica abrumadora.
-    // Esto dispara la probabilidad de goleada del fuerte y "apaga" el ataque del débil.
+    let golProbA = (ratioOfensivoA * 1.3) + (pesoSoporteA * 0.6);
+    let golProbB = (ratioOfensivoB * 1.3) + (pesoSoporteB * 0.6);
+
+    // 2. MULTIPLICADOR DE DOMINIO ABSOLUTO
+    // Si la diferencia global supera los 8 puntos, rompemos la paridad matemática
+    // Disparamos los goles del grande y aplastamos las chances del chico.
     if (diffTotal > 8) {
         let ventaja = diffTotal - 8;
-        golProbA += (ventaja * 0.15); // Suma xG directo (ej: 20 pts de dif = +3 goles esperados)
-        golProbB = Math.max(0.1, golProbB - (ventaja * 0.05)); // Hunde las chances del débil
+        golProbA += (ventaja * 0.15); 
+        golProbB = Math.max(0.1, golProbB - (ventaja * 0.05)); 
     } else if (diffTotal < -8) {
         let ventaja = Math.abs(diffTotal) - 8;
         golProbB += (ventaja * 0.15);
@@ -151,8 +162,9 @@ function calcularPrediccion() {
     let diffAgrupadas = {};
     let totalProb = 0;
 
-    // 3. Simulamos con Poisson (de 0 a 8 goles para dar margen a palizas)
+    // 3. Simulamos todos los resultados posibles (AUMENTAMOS DE 7 A 8 PARA PALIZAS)
     for(let i = 0; i <= 8; i++) {
+        for(let j = 0; j <= 8; j++) {
         for(let j = 0; j <= 8; j++) {
             let prob = poisson(i, golProbA) * poisson(j, golProbB);
             let diff = i - j;
