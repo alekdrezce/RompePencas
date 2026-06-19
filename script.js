@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const p1 = document.getElementById('p1');
     const p2 = document.getElementById('p2');
     
-    // Chequeo de seguridad: te avisa en la consola si losIDs del HTML no coinciden
+    // Chequeo de seguridad: te avisa en la consola si los IDs del HTML no coinciden
     if (!p1 || !p2) {
         console.error("¡Ojo! El script no encuentra los <select> con id='p1' y id='p2' en tu HTML.");
         return;
@@ -162,53 +162,6 @@ function calcularPrediccion() {
         let d = item.diff;
         let diffPorcentaje = (item.prob * 100).toFixed(1);
         
-        let tituloDiff = "";
-        if (d === 0) {
-            tituloDiff = `Empate <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
-        } else if (d > 0) {
-            tituloDiff = `Victoria de ${p1} por ${d} <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
-        } else {
-            tituloDiff = `Victoria de ${p2} por ${Math.abs(d)} <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
-        }
-
-        // Buscamos los 3 marcadores exactos con más probabilidad para ESA diferencia
-        let top3Resultados = resultadosExactos.filter(r => r.diff === d)
-            .sort((a, b) => b.prob - a.prob)
-            .slice(0, 3);
-
-        htmlSalida += `
-            <div class="category" style="margin-bottom: 20px;">
-                <h4 style="color: #2c3e50; border-bottom: 2px solid #bdc3c7; padding-bottom: 8px; margin-bottom: 12px; font-size: 1.1em;">${tituloDiff}</h4>
-                ${top3Resultados.map(r => {
-                    let probScore = (r.prob / totalProb * 100).toFixed(1);
-                    return `
-                    <div class="score-item" style="padding: 10px; border-bottom: 1px solid #ecf0f1; margin-bottom: 4px; background-color: #fcfcfc;">
-                        ${p1} <strong style="font-size: 1.1em;">${r.gA} - ${r.gB}</strong> ${p2} 
-                        <span style="float: right; font-weight: 600; color: #2980b9;">${probScore}%</span>
-                    </div>`;
-                }).join('')}
-            </div>
-        `;
-    });
-
-    htmlSalida += `</div>`;
-    resDiv.innerHTML = htmlSalida;
-}
-
-    // 3. Obtenemos las 3 diferencias más probables ordenadas por porcentaje
-    let top3Diffs = Object.keys(diffAgrupadas).map(d => ({
-        diff: parseInt(d),
-        prob: diffAgrupadas[d] / totalProb
-    })).sort((a, b) => b.prob - a.prob).slice(0, 3);
-
-    // 4. Armamos el HTML limpio
-    let htmlSalida = `<div class="result-card">`;
-
-    top3Diffs.forEach((item) => {
-        let d = item.diff;
-        let diffPorcentaje = (item.prob * 100).toFixed(1);
-        
-        // Títulos dinámicos y al pie
         let tituloDiff = "";
         if (d === 0) {
             tituloDiff = `Empate <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
