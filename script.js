@@ -61,7 +61,16 @@ const dbEquipos = {
     "Uruguay": [8, 8, 8, 7, 9, 9, 9, 9, 8, 9],
     "Uzbekistán": [3, 6, 6, 5, 6, 6, 6, 7, 6, 6]
 };
-
+// Mapeo de Banderas para la UI
+const banderas = {
+    "Alemania": "🇩🇪", "Arabia Saudita": "🇸🇦", "Argelia": "🇩🇿", "Argentina": "🇦🇷", "Australia": "🇦🇺", "Austria": "🇦🇹",
+    "Bélgica": "🇧🇪", "Bosnia y Herzegovina": "🇧🇦", "Brasil": "🇧🇷", "Cabo Verde": "🇨🇻", "Canadá": "🇨🇦", "Colombia": "🇨🇴",
+    "Corea del Sur": "🇰🇷", "Costa de Marfil": "🇨🇮", "Croacia": "🇭🇷", "Curazao": "🇨🇼", "Ecuador": "🇪🇨", "Egipto": "🇪🇬", "Escocia": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "España": "🇪🇸",
+    "Estados Unidos": "🇺🇸", "Francia": "🇫🇷", "Ghana": "🇬🇭", "Haití": "🇭🇹", "Inglaterra": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Irak": "🇮🇶", "Irán": "🇮🇷", "Japón": "🇯🇵",
+    "Jordania": "🇯🇴", "Marruecos": "🇲🇦", "México": "🇲🇽", "Noruega": "🇳🇴", "Nueva Zelanda": "🇳🇿", "Panamá": "🇵🇦",
+    "Paraguay": "🇵🇾", "Países Bajos": "🇳🇱", "Portugal": "🇵🇹", "Qatar": "🇶🇦", "RD Congo": "🇨🇩",
+    "República Checa": "🇨🇿", "Senegal": "🇸🇳", "Sudáfrica": "🇿🇦", "Suecia": "🇸🇪", "Suiza": "🇨🇭", "Turquía": "🇹🇷", "Túnez": "🇹🇳", "Uruguay": "🇺🇾", "Uzbekistán": "🇺🇿"
+};
 // Función de factoriales para Poisson
 function factorial(n) {
     if (n === 0 || n === 1) return 1;
@@ -179,7 +188,7 @@ function calcularPrediccion() {
         prob: diffAgrupadas[d] / totalProb
     })).sort((a, b) => b.prob - a.prob).slice(0, 3);
 
-    // 5. NUEVO RENDERIZADO UI
+    // 5. RENDERIZADO UI HORIZONTAL
     const etiquetas = ["Más probable", "Probable", "Menos probable"];
     const flag1 = banderas[p1] || "";
     const flag2 = banderas[p2] || "";
