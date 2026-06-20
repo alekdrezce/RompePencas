@@ -188,12 +188,13 @@ function calcularPrediccion() {
         prob: diffAgrupadas[d] / totalProb
     })).sort((a, b) => b.prob - a.prob).slice(0, 3);
 
-    // 5. RENDERIZADO UI HORIZONTAL
+    // 5. NUEVO RENDERIZADO UI (Horizontal y Limpio)
     const etiquetas = ["Más probable", "Probable", "Menos probable"];
     const flag1 = banderas[p1] || "";
     const flag2 = banderas[p2] || "";
 
-    let htmlSalida = `<div class="result-card">`;
+    // Le sacamos las clases css pesadas para que sea puro texto alineado
+    let htmlSalida = `<div style="font-family: sans-serif; color: #2c3e50; padding: 10px 0;">`;
 
     top3Diffs.forEach((item, index) => {
         let d = item.diff;
@@ -208,21 +209,20 @@ function calcularPrediccion() {
             tituloDiff = `${etiqueta}: ${p2} +${Math.abs(d)} Gol${Math.abs(d) > 1 ? 'es' : ''}`;
         }
 
-        // Filtramos resultados de esa diferencia y ordenamos
         let top3Resultados = resultadosExactos.filter(r => r.diff === d)
             .sort((a, b) => b.prob - a.prob)
             .slice(0, 3);
 
-        // Construimos la línea de resultados horizontal con banderas
+        // white-space: nowrap evita que el resultado individual se rompa a la mitad si la pantalla es chica
         let resultadosHTML = top3Resultados.map(r => {
             let probScore = (r.prob / totalProb * 100).toFixed(1);
-            return `<span style="margin-right: 20px; font-size: 1.1em;">${flag1} <strong>${r.gA}-${r.gB}</strong> ${flag2} <span style="font-weight: 600; color: #2980b9; margin-left: 5px;">${probScore}%</span></span>`;
+            return `<span style="white-space: nowrap; margin-right: 15px;">${flag1}${r.gA}-${r.gB}${flag2} <strong>${probScore}%</strong></span>`;
         }).join('');
 
         htmlSalida += `
-            <div class="category" style="margin-bottom: 25px;">
-                <h4 style="color: #2c3e50; margin-bottom: 10px; font-size: 1.1em; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px;">${tituloDiff}</h4>
-                <div style="display: flex; flex-wrap: wrap; align-items: center; padding: 5px 0;">
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; margin-bottom: 4px;">${tituloDiff}</div>
+                <div style="font-size: 1.1em;">
                     ${resultadosHTML}
                 </div>
             </div>
