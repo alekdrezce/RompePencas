@@ -122,7 +122,6 @@ function calcularPrediccion() {
 
     if (!p1 || !p2 || p1 === p2) return;
 
-    // Calculamos el puntaje global para medir la "Brecha de Jerarquía"
     const f1 = dbEquipos[p1].reduce((a, b) => a + b, 0);
     const f2 = dbEquipos[p2].reduce((a, b) => a + b, 0);
     const diffTotal = f1 - f2;
@@ -130,7 +129,7 @@ function calcularPrediccion() {
     const cap1 = getCapacidades(p1);
     const cap2 = getCapacidades(p2);
 
-    // 1. CÁLCULO DE xG (Goles Esperados) BASADO EN RATIOS ANALÍTICOS
+    // 1. xG Base (Goles Esperados)
     let ratioOfensivoA = cap1.ataque / cap2.defensa; 
     let ratioOfensivoB = cap2.ataque / cap1.defensa;
     
@@ -140,26 +139,29 @@ function calcularPrediccion() {
     let golProbA = (ratioOfensivoA * 1.3) + (pesoSoporteA * 0.6);
     let golProbB = (ratioOfensivoB * 1.3) + (pesoSoporteB * 0.6);
 
-    // 2. MULTIPLICADOR DE DOMINIO ABSOLUTO
-    // Si la diferencia global supera los 8 puntos, rompemos la paridad matemática
-    // Disparamos los goles del grande y aplastamos las chances del chico.
+    // 2. Multiplicador mitigado
     if (diffTotal > 8) {
         let ventaja = diffTotal - 8;
-        golProbA += (ventaja * 0.15); 
-        golProbB = Math.max(0.1, golProbB - (ventaja * 0.05)); 
+        let impactoMitigado = Math.sqrt(ventaja) * 0.4; 
+        golProbA += impactoMitigado; 
+        golProbB = Math.max(0.3, golProbB - (impactoMitigado * 0.2)); 
     } else if (diffTotal < -8) {
         let ventaja = Math.abs(diffTotal) - 8;
-        golProbB += (ventaja * 0.15);
-        golProbA = Math.max(0.1, golProbA - (ventaja * 0.05));
+        let impactoMitigado = Math.sqrt(ventaja) * 0.4;
+        golProbB += impactoMitigado;
+        golProbA = Math.max(0.3, golProbA - (impactoMitigado * 0.2));
     }
+
+    golProbA = Math.min(golProbA, 3.8);
+    golProbB = Math.min(golProbB, 3.8);
 
     let resultadosExactos = [];
     let diffAgrupadas = {};
     let totalProb = 0;
 
-    // 3. Simulamos todos los resultados posibles (de 0 a 8 goles)
-    for(let i = 0; i <= 8; i++) {
-        for(let j = 0; j <= 8; j++) {
+    // 3. Simulación Poisson
+    for(let i = 0; i <= 5; i++) {
+        for(let j = 0; j <= 5; j++) {
             let prob = poisson(i, golProbA) * poisson(j, golProbB);
             let diff = i - j;
             
@@ -177,37 +179,43 @@ function calcularPrediccion() {
         prob: diffAgrupadas[d] / totalProb
     })).sort((a, b) => b.prob - a.prob).slice(0, 3);
 
-    // 5. Renderizado final
+    // 5. NUEVO RENDERIZADO UI
+    const etiquetas = ["Más probable", "Probable", "Menos probable"];
+    const flag1 = banderas[p1] || "";
+    const flag2 = banderas[p2] || "";
+
     let htmlSalida = `<div class="result-card">`;
 
-    top3Diffs.forEach((item) => {
+    top3Diffs.forEach((item, index) => {
         let d = item.diff;
-        let diffPorcentaje = (item.prob * 100).toFixed(1);
+        let etiqueta = etiquetas[index];
         
         let tituloDiff = "";
         if (d === 0) {
-            tituloDiff = `Empate <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
+            tituloDiff = `${etiqueta}: Empate`;
         } else if (d > 0) {
-            tituloDiff = `Victoria de ${p1} por ${d} <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
+            tituloDiff = `${etiqueta}: ${p1} +${d} Gol${d > 1 ? 'es' : ''}`;
         } else {
-            tituloDiff = `Victoria de ${p2} por ${Math.abs(d)} <span style="font-weight:normal; font-size:0.9em; color:#7f8c8d; float:right;">${diffPorcentaje}%</span>`;
+            tituloDiff = `${etiqueta}: ${p2} +${Math.abs(d)} Gol${Math.abs(d) > 1 ? 'es' : ''}`;
         }
 
+        // Filtramos resultados de esa diferencia y ordenamos
         let top3Resultados = resultadosExactos.filter(r => r.diff === d)
             .sort((a, b) => b.prob - a.prob)
             .slice(0, 3);
 
+        // Construimos la línea de resultados horizontal con banderas
+        let resultadosHTML = top3Resultados.map(r => {
+            let probScore = (r.prob / totalProb * 100).toFixed(1);
+            return `<span style="margin-right: 20px; font-size: 1.1em;">${flag1} <strong>${r.gA}-${r.gB}</strong> ${flag2} <span style="font-weight: 600; color: #2980b9; margin-left: 5px;">${probScore}%</span></span>`;
+        }).join('');
+
         htmlSalida += `
-            <div class="category" style="margin-bottom: 20px;">
-                <h4 style="color: #2c3e50; border-bottom: 2px solid #bdc3c7; padding-bottom: 8px; margin-bottom: 12px; font-size: 1.1em;">${tituloDiff}</h4>
-                ${top3Resultados.map(r => {
-                    let probScore = (r.prob / totalProb * 100).toFixed(1);
-                    return `
-                    <div class="score-item" style="padding: 10px; border-bottom: 1px solid #ecf0f1; margin-bottom: 4px; background-color: #fcfcfc;">
-                        ${p1} <strong style="font-size: 1.1em;">${r.gA} - ${r.gB}</strong> ${p2} 
-                        <span style="float: right; font-weight: 600; color: #2980b9;">${probScore}%</span>
-                    </div>`;
-                }).join('')}
+            <div class="category" style="margin-bottom: 25px;">
+                <h4 style="color: #2c3e50; margin-bottom: 10px; font-size: 1.1em; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px;">${tituloDiff}</h4>
+                <div style="display: flex; flex-wrap: wrap; align-items: center; padding: 5px 0;">
+                    ${resultadosHTML}
+                </div>
             </div>
         `;
     });
